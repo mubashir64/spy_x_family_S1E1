@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>Advance P2P VanLong Streaming</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+         integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="https://p2p.streamservice.online/public/dist/hls.js"></script>
+      <script src="https://ssl.p.jwpcdn.com/player/v/8.1.3/jwplayer.js"></script>
+      <script type="text/javascript">jwplayer.key = "W7zSm81+mmIsg7F+fyHRKhF3ggLkTqtGMhvI92kbqf/ysE99";</script>
+      <script src="https://p2p.streamservice.online/public/dist/hola-jwplayer-hlsjs.min.js"></script>
+      <script>
+         window.trackers = ["wss://tracker.btorrent.xyz/", "wss://tracker.openwebtorrent.com/"];
+         var extractHostname = function (url) {
+             var hostname;
+             if (url.indexOf("//") > -1) {
+                 hostname = url.split('/')[2];
+             }else {
+                 hostname = url.split('/')[0];
+             }
+         
+             //find & remove port number
+             hostname = hostname.split(':')[0];
+             //find & remove "?"
+             hostname = hostname.split('?')[0];
+             if (url.indexOf('https://') >= 0) {
+                 return 'https://' + hostname;
+             } else {
+                 return 'http://' + hostname;
+             }
+         
+         }
+         var getUrlParameter = function getUrlParameter(sParam) {
+             var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                 sURLVariables = sPageURL.split('&'),
+                 sParameterName,
+                 i;
+             for (i = 0; i < sURLVariables.length; i++) {
+                 sParameterName = sURLVariables[i].split('=');
+         
+                 if (sParameterName[0] === sParam) {
+                     return sParameterName[1] === undefined ? true : sParameterName[1];
+                 }
+             }
+         };
+         var id = getUrlParameter('id');
+         var showInfo = getUrlParameter('showInfo');
+         if (!id) {
+             
+         var urlVideo ='https://www.udrop.com/file/Lxp5/spy_x_family_S1E1.mp4';
+         } else {
+             var urlVideo = extractHostname(location.href) + '/hls/' + id + '/' + id + '.playlist.m3u8';
+         }
+      </script>
+      <style>
+         body {
+         margin-top: 0px;
+         margin-bottom: 0px;
+         background: lightslategray;
+         }
+         .info {
+         color: white;
+         padding: 10px;
+         position: fixed;
+         top: 0px;
+         left: 0px;
+         pading: 0px;
+         font-size: 0px;
+         }
+         .info .server, .info .total, .info .p2p, .info .connected-peers .info .ip-peers {
+         display: none;
+         }
+         #video_container {
+         max-width: 100vw;
+         /*width: 100%;*/
+         }
+         #video {
+         width: 100vw !important;
+         height: 100vh !important;
+         }
+      </style>
+   </head>
+   <body>
+      <div id="main-view">
+         <div>
+            <div id="video_container" class="text-center"></div>
+            <div class="info">
+               <div class="total"></div>
+               <div class="server"></div>
+               <div class="p2p"></div>
+               <div class="connected-peers"></div>
+               <div class="ip-peers"></div>
+            </div>
+         </div>
+      </div>
+      <script>
+         jwplayer("video_container").setup({
+                 "file": urlVideo,
+            tracks: [{ 
+            file: "https://d12zt1n3pd4xhr.cloudfront.net/fp/subtitles-demo.vtt", 
+            label: "English",
+            kind: "captions",
+            "default": true 
+        }]
+         });
+         var provider = require("@hola.org/jwplayer-hlsjs");
+         provider.attach();
+         if (showInfo) {
+             $('.info').css('font-size', '2rem').css('background', 'black');
+             $('.info .server, .info .total, .info .p2p, .info .connected-peers .info .ip-peers').css('display', 'block');
+         }
+      </script>
+   </body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Download Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f4;
+    }
+
+    #loading-container {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #logo {
+      width: 100px; /* Adjust the width as needed */
+      margin-bottom: 20px; /* Add margin for spacing */
+    }
+
+    #loading-circle {
+      border: 8px solid #5a16ff;
+      border-top: 8px solid #f4f4f4;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 2s linear infinite;
+    }
+
+    #download-button {
+      display: none;
+      margin-top: 20px;
+    }
+
+    #download-button button {
+      background-color: #5a16ff;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 4px; /* Adding border-radius */
+    }
+
+    #loading-message {
+      margin-top: 10px;
+      color: #555;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loading-container">
+    <img id="logo" src="https://www.udrop.com/file/Lx0K/Your_paragraph_text_(4).png" alt="Your Logo"> <!-- Add your logo image here -->
+    <div id="loading-circle"></div>
+    <div id="loading-message">Fetching links...</div>
+    <div id="download-button">
+      <button onclick="downloadVideo()">Download Video</button>
+    </div>
+  </div>
+
+  <script>
+    // Function to simulate video download
+    function downloadVideo() {
+      window.location.href = 'https://cuty.io/wItowB';
+    }
+
+    // Delay function to show download button after 4 seconds
+    function showDownloadButton() {
+      document.getElementById('loading-circle').style.display = 'none';
+      document.getElementById('loading-message').style.display = 'none';
+      document.getElementById('download-button').style.display = 'block';
+    }
+
+    // Set timeout to show download button after 4 seconds
+    setTimeout(showDownloadButton, 2000);
+  </script>
+
+</body>
+</html>
